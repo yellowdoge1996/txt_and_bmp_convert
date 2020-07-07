@@ -66,6 +66,11 @@ public class FileController {
         return "test";
     }
 
+    @RequestMapping("myPage")
+    public String myPage() {
+        return "myPage";
+    }
+
     @ResponseBody
     @RequestMapping("uploadBmp")
     public String uploadBmp(@RequestParam("file")MultipartFile file) {
