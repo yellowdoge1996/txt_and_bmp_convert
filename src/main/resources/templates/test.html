@@ -3,13 +3,59 @@
     <head >
         <meta charset="UTF-8">
         <title>测试文件</title>
+        <script src="../js/jquery-3.5.1.min.js"></script>
     </head>
-    <body>
-        <p>单文件上传</p>
-        <form action="/file/uploadTxt" method="post" enctype="multipart/form-data">
-            文件: <input type="file" name="file" />
-            <input type="submit" />
+    <body style="font-size: 35px">
+        <p>加密</p>
+        文件: <input type="file" name="file" accept="text/*" id="encodeFile"/>
+        <button onclick="upload(0)">提交</button>
+        <br/>
+        <p>解密</p>
+        文件: <input type="file" name="file" accept="image/bmp" id="decodeFile"/>
+        <button onclick="upload(1)">提交</button>
+        <br/>
+        <form action="/file/download" method="get" enctype="multipart/form-data" id="download">
+            <input name="filename" id="fileName" style="display: none"/>
         </form>
     </body>
+<script>
+    function upload(type) {
+        var url = '';
+        var file = null;
+        if (type === 0) {
+            url = '../file/uploadTxt';
+            file = $('#encodeFile')[0].files[0];
+            if (!file){
+                alert('请选择加密文件！');
+                return;
+            }
+        }else {
+            url = '../file/uploadBmp';
+            file = $('#decodeFile').file[0];
+            if (!file){
+                alert('请选择解密文件！');
+                return;
+            }
+        }
+        var formData = new FormData();
+        formData.append("file", file);
 
+        //upload
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            async: true,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.filename) {
+                    $('#fileName').val(data.filename);
+                    $('#download').submit();
+                }
+            }
+        })
+    }
+</script>
 </html>
