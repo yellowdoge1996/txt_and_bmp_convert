@@ -44,7 +44,7 @@ public class FileUtil {
             }
         }
 
-        File outFile = new File("output.txt");
+        File outFile = new File(System.currentTimeMillis() + "output.txt");
         try {
             ps = new PrintStream(new FileOutputStream(outFile));
             ps.append(sb.toString());

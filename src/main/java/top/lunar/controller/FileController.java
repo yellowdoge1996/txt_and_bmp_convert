@@ -24,8 +24,7 @@ public class FileController {
 
     @ResponseBody
     @RequestMapping("uploadTxt")
-    public String uploadTxt(@RequestParam("file")MultipartFile file, HttpServletRequest request,
-                            HttpServletResponse response) throws IOException {
+    public String uploadTxt(@RequestParam("file")MultipartFile file) throws IOException {
         BufferedReader bf = null;
         try {
             if (file.isEmpty()) {
@@ -69,10 +68,7 @@ public class FileController {
 
     @ResponseBody
     @RequestMapping("uploadBmp")
-    public String uploadBmp(@RequestParam("file")MultipartFile file, HttpServletResponse response) throws IOException {
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-
+    public String uploadBmp(@RequestParam("file")MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 return "file is empty";
@@ -83,27 +79,11 @@ public class FileController {
             BufferedImage bi = ImageIO.read(realFile);
             File outFile = FileUtil.decode(bi);
 
-            //将file返回前端
-            String fileName = outFile.getName();
-            response.setHeader("content-type", "application/octet-stream");
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            byte[] buffer = new byte[1024];
-            fis = new FileInputStream(outFile);
-            bis = new BufferedInputStream(fis);
-            OutputStream os = response.getOutputStream();
-            int i = bis.read(buffer);
-            while (i!=-1) {
-                os.write(buffer, 0, i);
-                i = bis.read(buffer);
-            }
-            os.flush();
-            return "";
+            Map map = new HashMap();
+            map.put("filename", outFile.getName());
+            return JSON.toJSONString(map);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            fis.close();
-            bis.close();
         }
         return "upload failure";
     }
