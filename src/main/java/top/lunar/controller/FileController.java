@@ -117,6 +117,7 @@ public class FileController {
             File file = new File(filename);
             if (file.exists()){
                 try {
+
                     response.setHeader("content-type", "application/octet-stream");
                     response.setContentType("application/octet-stream");
                     // 下载文件能正常显示中文
